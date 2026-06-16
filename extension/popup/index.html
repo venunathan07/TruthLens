@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TruthLens</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      width: 340px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .header h2 {
+      color: #cba6f7;
+      font-size: 17px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      background: #a6e3a1;
+      color: #1e1e2e;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: #313244;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 26px;
+      font-weight: 700;
+      color: #cba6f7;
+    }
+
+    .stat-card .number.red { color: #f38ba8; }
+    .stat-card .number.green { color: #a6e3a1; }
+
+    .stat-card .label {
+      font-size: 11px;
+      color: #6c7086;
+      margin-top: 4px;
+    }
+
+    .section-title {
+      font-size: 12px;
+      color: #6c7086;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .category-list {
+      background: #313244;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .category-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-bottom: 1px solid #1e1e2e;
+    }
+
+    .category-row:last-child { border-bottom: none; }
+
+    .category-name {
+      font-size: 12px;
+      color: #cdd6f4;
+    }
+
+    .category-bar-wrap {
+      flex: 1;
+      margin: 0 10px;
+      height: 4px;
+      background: #1e1e2e;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .category-bar {
+      height: 100%;
+      background: #cba6f7;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .category-count {
+      font-size: 12px;
+      color: #a6adc8;
+      min-width: 20px;
+      text-align: right;
+    }
+
+    .platforms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .platform-tag {
+      font-size: 11px;
+      background: #181825;
+      color: #6c7086;
+      padding: 3px 10px;
+      border-radius: 10px;
+    }
+
+    .reset-btn {
+      width: 100%;
+      padding: 8px;
+      background: #313244;
+      color: #6c7086;
+      border: none;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .reset-btn:hover { background: #45475a; color: #cdd6f4; }
+
+    .empty {
+      text-align: center;
+      color: #6c7086;
+      font-size: 12px;
+      padding: 12px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>ðŸ” TruthLens</h2>
+    <span class="status-badge">â— Active</span>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="number" id="total-scanned">0</div>
+      <div class="label">Posts Scanned</div>
+    </div>
+    <div class="stat-card">
+      <div class="number red" id="total-flagged">0</div>
+      <div class="label">Flagged This Week</div>
+    </div>
+    <div class="stat-card">
+      <div class="number green" id="total-correct">0</div>
+      <div class="label">Correct Flags</div>
+    </div>
+    <div class="stat-card">
+      <div class="number" id="flag-rate">0%</div>
+      <div class="label">Flag Rate</div>
+    </div>
+  </div>
+
+  <div class="section-title">By Category</div>
+  <div class="category-list" id="category-list">
+    <div class="empty">No flags yet this week</div>
+  </div>
+
+  <div class="section-title">Platforms</div>
+  <div class="platforms">
+    <span class="platform-tag">Twitter/X</span>
+    <span class="platform-tag">Instagram</span>
+    <span class="platform-tag">WhatsApp</span>
+    <span class="platform-tag">Facebook</span>
+    <span class="platform-tag">LinkedIn</span>
+    <span class="platform-tag">Naukri</span>
+  </div>
+
+  <button class="reset-btn" id="reset-btn">Reset Weekly Stats</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+
