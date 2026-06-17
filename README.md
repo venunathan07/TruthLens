@@ -140,8 +140,6 @@ Stats tracked in chrome.storage.local → visible in popup dashboard
 
 ![TruthLens Architecture](architecture-diagram.png)
 
-> *Place your architecture diagram image as `architecture-diagram.png` in the root of this repository.*
-
 ---
 
 ## 7. Architecture Highlights
