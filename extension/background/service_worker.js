@@ -1,4 +1,4 @@
-const BACKEND_URL = "http://localhost:8001";
+const BACKEND_URL = "https://truthlens-2a36.onrender.com";
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "ANALYZE_BATCH") {
