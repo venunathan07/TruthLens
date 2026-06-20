@@ -5,7 +5,7 @@
     results.forEach((result) => {
       if (result.flagged && result.confidence >= 0.90) {
         const el = document.querySelector(`[data-tl-id="${result.id}"]`);
-        if (el && !el.querySelector(".tl-overlay")) {
+        if (el && !el.dataset.tlBlurred) {
           applyBlur(el, result);
         }
       }
@@ -14,15 +14,13 @@
 
   function applyBlur(el, result) {
     el.style.filter = "blur(6px)";
-    el.style.position = "relative";
     el.style.transition = "filter 0.3s ease";
+    el.dataset.tlBlurred = "true";
 
     const overlay = document.createElement("div");
     overlay.className = "tl-overlay";
     overlay.style.cssText = `
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.85);
+      position: fixed;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -33,6 +31,7 @@
       padding: 20px;
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      pointer-events: auto;
     `;
 
     const label = document.createElement("div");
@@ -48,6 +47,7 @@
       box-shadow: 0 4px 14px rgba(220, 38, 38, 0.5);
       border: 2px solid rgba(255,255,255,0.25);
       max-width: 100%;
+      white-space: nowrap;
     `;
     label.textContent = `⚠ ${(result.category || "Possible Misinformation").toUpperCase()} · ${Math.round(result.confidence * 100)}% CONFIDENCE`;
 
@@ -68,7 +68,10 @@
     showBtn.onclick = (e) => {
       e.stopPropagation();
       el.style.filter = "none";
+      delete el.dataset.tlBlurred;
       overlay.remove();
+      window.removeEventListener("scroll", reposition, true);
+      window.removeEventListener("resize", reposition);
     };
 
     const whyBtn = document.createElement("button");
@@ -85,9 +88,26 @@
     btnRow.appendChild(whyBtn);
     overlay.appendChild(label);
     overlay.appendChild(btnRow);
+    document.body.appendChild(overlay);
 
-    el.style.position = "relative";
-    el.appendChild(overlay);
+    function reposition() {
+      const rect = el.getBoundingClientRect();
+      overlay.style.top = `${rect.top}px`;
+      overlay.style.left = `${rect.left}px`;
+      overlay.style.width = `${rect.width}px`;
+      overlay.style.height = `${rect.height}px`;
+      overlay.style.background = "rgba(0, 0, 0, 0.85)";
+
+      if (!document.body.contains(el)) {
+        overlay.remove();
+        window.removeEventListener("scroll", reposition, true);
+        window.removeEventListener("resize", reposition);
+      }
+    }
+
+    reposition();
+    window.addEventListener("scroll", reposition, true);
+    window.addEventListener("resize", reposition);
   }
 
   function showExplanation(el, result) {
