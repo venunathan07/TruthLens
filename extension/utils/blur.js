@@ -16,6 +16,7 @@
     el.style.filter = "blur(6px)";
     el.style.position = "relative";
     el.style.transition = "filter 0.3s ease";
+    el.style.overflow = "visible";
 
     const overlay = document.createElement("div");
     overlay.className = "tl-overlay";
@@ -27,27 +28,37 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding-bottom: 40%;
-      z-index: 9999;
+      z-index: 999999;
       border-radius: 8px;
       gap: 12px;
+      padding: 16px;
+      box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      pointer-events: auto;
     `;
 
     const label = document.createElement("div");
     label.style.cssText = `
       color: #fff;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       background: rgba(220, 38, 38, 0.95);
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
+      text-align: center;
       text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+      max-width: 100%;
     `;
-    label.textContent = `⚠️ ${result.category || "Possible Misinformation"} · ${Math.round(result.confidence * 100)}% confidence`;
+    label.textContent = `WARNING: ${result.category || "Possible Misinformation"} - ${Math.round(result.confidence * 100)}% confidence`;
 
     const btnRow = document.createElement("div");
-    btnRow.style.cssText = "display: flex; gap: 10px;";
+    btnRow.style.cssText = `
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      max-width: 100%;
+    `;
 
     const showBtn = document.createElement("button");
     showBtn.textContent = "Show Anyway";
@@ -71,7 +82,6 @@
     overlay.appendChild(label);
     overlay.appendChild(btnRow);
 
-    el.style.position = "relative";
     el.appendChild(overlay);
   }
 
@@ -86,21 +96,23 @@
       bottom: 24px;
       right: 24px;
       width: 320px;
+      max-width: calc(100vw - 48px);
       background: #1e1e2e;
       color: #cdd6f4;
       border-radius: 12px;
       padding: 16px;
-      z-index: 99999;
+      z-index: 9999999;
       box-shadow: 0 8px 32px rgba(0,0,0,0.4);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 13px;
       line-height: 1.5;
+      box-sizing: border-box;
     `;
 
     box.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-        <strong style="color:#f38ba8;">🔍 Why TruthLens flagged this</strong>
-        <span style="cursor:pointer;font-size:16px;" id="tl-close">✕</span>
+        <strong style="color:#f38ba8;">Why TruthLens flagged this</strong>
+        <span style="cursor:pointer;font-size:16px;" id="tl-close">X</span>
       </div>
       <div style="margin-bottom:8px;">
         <span style="background:#313244;padding:2px 8px;border-radius:12px;font-size:11px;">
@@ -111,9 +123,9 @@
         </span>
       </div>
       <p style="margin:0 0 12px 0;">${result.explanation || "This content was flagged as potentially misleading."}</p>
-      <div style="display:flex;gap:8px;">
-        <button id="tl-correct" style="${buttonStyle("#166534")}">✓ Correctly flagged</button>
-        <button id="tl-wrong" style="${buttonStyle("#7f1d1d")}">✗ Wrong flag</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="tl-correct" style="${buttonStyle("#166534")}">Correctly flagged</button>
+        <button id="tl-wrong" style="${buttonStyle("#7f1d1d")}">Wrong flag</button>
       </div>
     `;
 
@@ -142,11 +154,12 @@
       background: ${bg};
       color: #fff;
       border: none;
-      padding: 8px 18px;
+      padding: 6px 14px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
+      white-space: nowrap;
       box-shadow: 0 2px 4px rgba(0,0,0,0.3);
     `;
   }
