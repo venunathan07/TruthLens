@@ -32,6 +32,7 @@
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       pointer-events: auto;
+      will-change: top, left, width, height;
     `;
 
     const label = document.createElement("div");
@@ -69,9 +70,8 @@
       e.stopPropagation();
       el.style.filter = "none";
       delete el.dataset.tlBlurred;
+      stop();
       overlay.remove();
-      window.removeEventListener("scroll", reposition, true);
-      window.removeEventListener("resize", reposition);
     };
 
     const whyBtn = document.createElement("button");
@@ -90,24 +90,54 @@
     overlay.appendChild(btnRow);
     document.body.appendChild(overlay);
 
-    function reposition() {
-      const rect = el.getBoundingClientRect();
-      overlay.style.top = `${rect.top}px`;
-      overlay.style.left = `${rect.left}px`;
-      overlay.style.width = `${rect.width}px`;
-      overlay.style.height = `${rect.height}px`;
-      overlay.style.background = "rgba(0, 0, 0, 0.85)";
+    let rafId = null;
+    let lastRect = null;
 
+    function reposition() {
       if (!document.body.contains(el)) {
+        stop();
         overlay.remove();
-        window.removeEventListener("scroll", reposition, true);
-        window.removeEventListener("resize", reposition);
+        return;
       }
+
+      const rect = el.getBoundingClientRect();
+
+      if (
+        !lastRect ||
+        rect.top !== lastRect.top ||
+        rect.left !== lastRect.left ||
+        rect.width !== lastRect.width ||
+        rect.height !== lastRect.height
+      ) {
+        overlay.style.top = `${rect.top}px`;
+        overlay.style.left = `${rect.left}px`;
+        overlay.style.width = `${rect.width}px`;
+        overlay.style.height = `${rect.height}px`;
+        overlay.style.background = "rgba(0, 0, 0, 0.85)";
+        lastRect = rect;
+      }
+
+      const offScreen = rect.bottom < 0 || rect.top > window.innerHeight;
+      overlay.style.visibility = offScreen ? "hidden" : "visible";
+
+      rafId = requestAnimationFrame(reposition);
+    }
+
+    function stop() {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = null;
     }
 
     reposition();
-    window.addEventListener("scroll", reposition, true);
-    window.addEventListener("resize", reposition);
+
+    const observer = new MutationObserver(() => {
+      if (!document.body.contains(el)) {
+        stop();
+        overlay.remove();
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   }
 
   function showExplanation(el, result) {
