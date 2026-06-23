@@ -1,5 +1,4 @@
-﻿// instagram.js
-(function () {
+﻿(function () {
   let postCount = 0;
 
   function extractPost(article) {
@@ -58,3 +57,5 @@
   observer.observe(document.body, { childList: true, subtree: true });
   console.log("[TruthLens] Instagram scanner active");
 })();
+
+```
