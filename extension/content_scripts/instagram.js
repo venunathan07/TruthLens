@@ -57,5 +57,3 @@
   observer.observe(document.body, { childList: true, subtree: true });
   console.log("[TruthLens] Instagram scanner active");
 })();
-
-```
