@@ -18,7 +18,7 @@
       encoded = "post" + postCount;
     }
 
-    const id = ig--;
+    const id = `${encoded}_${postCount++}`;
     article.setAttribute("data-tl-id", id);
 
     const imgEls = article.querySelectorAll("img[srcset]");
